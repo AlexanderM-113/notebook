@@ -1,0 +1,22 @@
+{
+  "name": "notebook-writer",
+  "version": "1.0.0",
+  "description": "A comprehensive web application for managing customizable digital notebooks with fillable forms and content pages",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "echo \"Open test-basic.html in your browser to run tests\"",
+    "setup": "echo \"Open browser-setup.html in your browser to set up Appwrite\""
+  },
+  "keywords": [
+    "notebook",
+    "forms",
+    "appwrite",
+    "digital-signature",
+    "pdf-generation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
+}

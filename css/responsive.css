@@ -1,0 +1,433 @@
+/* Responsive Design - Media Queries */
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+    .admin-main,
+    .dashboard-main,
+    .page-entry-main {
+        max-width: 1400px;
+    }
+}
+
+/* Desktop */
+@media (max-width: 1200px) {
+    .notebooks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .pages-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .notebook-editor {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .editor-sidebar {
+        width: 100%;
+        max-height: 300px;
+    }
+
+    .editor-main {
+        height: auto;
+    }
+
+    .editor-content {
+        flex-direction: column;
+    }
+
+    .editor-form {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .editor-preview {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+    }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .admin-nav {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-btn {
+        flex: 1;
+        text-align: center;
+    }
+
+    .tab-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .filter-controls {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .notebooks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .pages-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .table {
+        font-size: 13px;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px;
+    }
+
+    .modal-content.large {
+        max-width: 95%;
+    }
+
+    .modal-content {
+        max-width: 95%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .login-container {
+        margin: 50px auto;
+        padding: 25px;
+    }
+
+    .login-header h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-header {
+        padding: 20px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-header .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .dashboard-main,
+    .page-entry-main {
+        padding: 0 15px;
+    }
+
+    .pages-list {
+        grid-template-columns: 1fr;
+    }
+
+    .notebooks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .group-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .group-card .group-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .user-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .user-item .user-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .page-entry-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .page-entry-header .page-info {
+        width: 100%;
+    }
+
+    .page-entry-form {
+        padding: 20px;
+    }
+
+    .signature-canvas {
+        height: 150px;
+    }
+
+    .signature-controls {
+        flex-direction: column;
+    }
+
+    .signature-controls .btn {
+        width: 100%;
+    }
+
+    .admin-header {
+        padding: 15px;
+    }
+
+    .admin-header h1 {
+        font-size: 20px;
+    }
+
+    .admin-nav {
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .tab-header h2 {
+        font-size: 22px;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-select,
+    .search-input,
+    .date-input {
+        width: 100%;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+    }
+
+    /* Responsive table */
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .notebook-card .notebook-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-form {
+        padding: 20px;
+    }
+
+    .modal-content {
+        max-height: 95vh;
+        margin: 10px;
+    }
+
+    .modal-header {
+        padding: 15px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-footer {
+        padding: 15px;
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    .toast {
+        max-width: 250px;
+        font-size: 13px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .login-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .login-header h1 {
+        font-size: 20px;
+    }
+
+    .login-header p {
+        font-size: 14px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 20px;
+    }
+
+    .dashboard-header .subtitle {
+        font-size: 14px;
+    }
+
+    .page-card {
+        padding: 20px;
+    }
+
+    .page-card h3 {
+        font-size: 16px;
+    }
+
+    .page-entry-form {
+        padding: 15px;
+    }
+
+    .page-content .form-group label {
+        font-size: 14px;
+    }
+
+    .page-content .form-group input,
+    .page-content .form-group textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .signature-section {
+        padding: 15px;
+    }
+
+    .signature-section h3 {
+        font-size: 16px;
+    }
+
+    .admin-header h1 {
+        font-size: 18px;
+    }
+
+    .nav-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+
+    .tab-header h2 {
+        font-size: 18px;
+    }
+
+    .notebook-card {
+        padding: 20px;
+    }
+
+    .notebook-card h3 {
+        font-size: 18px;
+    }
+
+    .group-card {
+        padding: 15px;
+    }
+
+    .user-item {
+        padding: 12px;
+    }
+
+    .settings-form {
+        padding: 15px;
+    }
+
+    .settings-section {
+        padding-bottom: 20px;
+    }
+
+    .settings-section h3 {
+        font-size: 16px;
+    }
+
+    /* Hide less important elements on very small screens */
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .status-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .login-container {
+        margin: 20px auto;
+    }
+
+    .signature-canvas {
+        height: 120px;
+    }
+
+    .modal-content {
+        max-height: 90vh;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .loading-screen,
+    .admin-header,
+    .dashboard-header,
+    .page-entry-header,
+    .btn,
+    .modal,
+    .toast-container,
+    .signature-controls,
+    .form-actions {
+        display: none !important;
+    }
+
+    .screen {
+        display: block !important;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    .page-entry-form {
+        box-shadow: none;
+        border: none;
+    }
+
+    .signature-canvas {
+        border: 1px solid #000;
+    }
+}

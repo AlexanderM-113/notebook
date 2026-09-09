@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notebook Writer</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/user.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <p>Loading Notebook Writer...</p>
+        </div>
+
+        <!-- User Login Screen -->
+        <div id="user-login-screen" class="screen hidden">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Welcome to Notebook Writer</h1>
+                    <p>Enter your first name to begin</p>
+                </div>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="user-first-name">Your First Name</label>
+                        <input 
+                            type="text" 
+                            id="user-first-name" 
+                            name="first_name" 
+                            placeholder="e.g., John" 
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Enter</button>
+                    <div id="login-error" class="error-message hidden"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- User Dashboard -->
+        <div id="user-dashboard" class="screen hidden">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <h1 id="user-welcome">Hello, User!</h1>
+                    <p class="subtitle">Your assigned pages are ready</p>
+                </div>
+                <button id="user-logout-btn" class="btn btn-secondary">Logout</button>
+            </header>
+
+            <main class="dashboard-main">
+                <div class="progress-section">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text">You have completed 0 of 0 assigned pages</p>
+                </div>
+
+                <div id="assigned-pages" class="pages-list">
+                    <!-- Pages will be dynamically loaded here -->
+                </div>
+            </main>
+        </div>
+
+        <!-- Page Entry Screen -->
+        <div id="page-entry-screen" class="screen hidden">
+            <header class="page-entry-header">
+                <button id="back-to-dashboard" class="btn btn-secondary">← Back to Dashboard</button>
+                <div class="page-info">
+                    <h2 id="page-title">Page Title</h2>
+                    <span id="page-number" class="page-number">Page 1</span>
+                </div>
+            </header>
+
+            <main class="page-entry-main">
+                <form id="page-entry-form" class="page-entry-form">
+                    <div id="page-content" class="page-content">
+                        <!-- Page content will be dynamically loaded here -->
+                    </div>
+
+                    <div class="signature-section">
+                        <h3>Signature</h3>
+                        <canvas id="signature-canvas" class="signature-canvas"></canvas>
+                        <div class="signature-controls">
+                            <button type="button" id="clear-signature" class="btn btn-secondary">Clear</button>
+                            <button type="button" id="confirm-signature" class="btn btn-primary" disabled>Confirm Signature</button>
+                        </div>
+                        <p id="signature-status" class="signature-status">Not signed</p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="submit-page" class="btn btn-primary btn-large" disabled>Submit Page</button>
+                    </div>
+                </form>
+            </main>
+        </div>
+
+        <!-- Admin Login Screen -->
+        <div id="admin-login-screen" class="screen hidden">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Admin Login</h1>
+                    <p>Enter your credentials to access the admin panel</p>
+                </div>
+                <form id="admin-login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="admin-email">Email</label>
+                        <input 
+                            type="email" 
+                            id="admin-email" 
+                            name="email" 
+                            placeholder="admin@example.com" 
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <input 
+                            type="password" 
+                            id="admin-password" 
+                            name="password" 
+                            placeholder="••••••••" 
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Login</button>
+                    <div id="admin-login-error" class="error-message hidden"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="screen hidden">
+            <header class="admin-header">
+                <div class="header-content">
+                    <h1>Notebook Writer Admin</h1>
+                    <nav class="admin-nav">
+                        <button class="nav-btn active" data-tab="notebooks">Notebooks</button>
+                        <button class="nav-btn" data-tab="entries">Entries</button>
+                        <button class="nav-btn" data-tab="groups">Groups</button>
+                        <button class="nav-btn" data-tab="audit-log">Audit Log</button>
+                        <button class="nav-btn" data-tab="settings">Settings</button>
+                    </nav>
+                </div>
+                <div class="header-actions">
+                    <span id="admin-name" class="admin-name">Admin</span>
+                    <button id="admin-logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                <!-- Notebooks Tab -->
+                <div id="notebooks-tab" class="tab-content active">
+                    <div class="tab-header">
+                        <h2>Notebook Management</h2>
+                        <button id="create-notebook-btn" class="btn btn-primary">Create New Notebook</button>
+                    </div>
+                    <div id="notebooks-list" class="notebooks-grid">
+                        <!-- Notebooks will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Entries Tab -->
+                <div id="entries-tab" class="tab-content hidden">
+                    <div class="tab-header">
+                        <h2>Entry Management</h2>
+                        <div class="filter-controls">
+                            <select id="entry-notebook-filter" class="filter-select">
+                                <option value="">All Notebooks</option>
+                            </select>
+                            <select id="entry-status-filter" class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="locked">Locked</option>
+                                <option value="unlocked">Unlocked</option>
+                            </select>
+                            <input type="text" id="entry-search" class="search-input" placeholder="Search by user name">
+                        </div>
+                    </div>
+                    <div id="entries-list" class="entries-table">
+                        <!-- Entries will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Groups Tab -->
+                <div id="groups-tab" class="tab-content hidden">
+                    <div class="tab-header">
+                        <h2>Group Management</h2>
+                        <button id="create-group-btn" class="btn btn-primary">Create New Group</button>
+                    </div>
+                    <div id="groups-list" class="groups-list">
+                        <!-- Groups will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Audit Log Tab -->
+                <div id="audit-log-tab" class="tab-content hidden">
+                    <div class="tab-header">
+                        <h2>Audit Log</h2>
+                        <div class="filter-controls">
+                            <select id="audit-action-filter" class="filter-select">
+                                <option value="">All Actions</option>
+                            </select>
+                            <input type="date" id="audit-date-from" class="date-input">
+                            <input type="date" id="audit-date-to" class="date-input">
+                        </div>
+                    </div>
+                    <div id="audit-log-list" class="audit-log-table">
+                        <!-- Audit log entries will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings-tab" class="tab-content hidden">
+                    <div class="tab-header">
+                        <h2>System Settings</h2>
+                    </div>
+                    <form id="settings-form" class="settings-form">
+                        <div class="settings-section">
+                            <h3>Application Settings</h3>
+                            <div class="form-group">
+                                <label for="app-name">Application Name</label>
+                                <input type="text" id="app-name" name="app_name" value="Notebook Writer">
+                            </div>
+                            <div class="form-group">
+                                <label for="primary-color">Primary Color</label>
+                                <input type="color" id="primary-color" name="primary_color" value="#3498db">
+                            </div>
+                            <div class="form-group">
+                                <label for="secondary-color">Secondary Color</label>
+                                <input type="color" id="secondary-color" name="secondary_color" value="#2ecc71">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>PDF Settings</h3>
+                            <div class="form-group">
+                                <label for="pdf-paper-size">Paper Size</label>
+                                <select id="pdf-paper-size" name="pdf_paper_size">
+                                    <option value="letter" selected>Letter (8.5" × 11")</option>
+                                    <option value="a4">A4</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="pdf-orientation">Orientation</label>
+                                <select id="pdf-orientation" name="pdf_orientation">
+                                    <option value="portrait" selected>Portrait</option>
+                                    <option value="landscape">Landscape</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="include-cover" name="include_cover" checked>
+                                    Include Cover Page
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="include-toc" name="include_toc" checked>
+                                    Include Table of Contents
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+
+        <!-- Notebook Editor Modal -->
+        <div id="notebook-editor-modal" class="modal hidden">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2 id="editor-notebook-title">Notebook Editor</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body notebook-editor">
+                    <div class="editor-sidebar">
+                        <div class="sidebar-header">
+                            <h3 id="sidebar-notebook-title">Notebook Title</h3>
+                            <p id="sidebar-group-indicator">Assigned to Group A</p>
+                        </div>
+                        <div class="sidebar-tabs">
+                            <button class="tab-btn active" data-tab="template-pages">Template Pages</button>
+                            <button class="tab-btn" data-tab="content-pages">Content Pages</button>
+                        </div>
+                        <div class="sidebar-actions">
+                            <button id="add-template-page" class="btn btn-sm btn-primary">+ Template Page</button>
+                            <button id="add-content-page" class="btn btn-sm btn-primary">+ Content Page</button>
+                        </div>
+                        <div id="pages-list" class="pages-list">
+                            <!-- Pages will be dynamically loaded here -->
+                        </div>
+                        <div class="sidebar-footer">
+                            <button id="notebook-settings-btn" class="btn btn-sm btn-secondary">Settings</button>
+                            <button id="publish-notebook-btn" class="btn btn-sm btn-success">Publish</button>
+                        </div>
+                    </div>
+                    <div class="editor-main">
+                        <div class="editor-toolbar">
+                            <div class="page-config">
+                                <input type="text" id="page-title-input" placeholder="Page Title" class="page-title-input">
+                                <span id="page-number-display" class="page-number-display">Page 1</span>
+                                <span id="page-type-display" class="page-type-display">Template Page</span>
+                            </div>
+                            <div class="toolbar-actions">
+                                <button id="preview-page" class="btn btn-sm btn-secondary">Preview</button>
+                                <button id="save-page" class="btn btn-sm btn-primary">Save Page</button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+                            <div class="editor-form">
+                                <div class="form-group">
+                                    <label>Background Color</label>
+                                    <input type="color" id="page-bg-color" value="#ffffff">
+                                </div>
+                                <div class="form-group">
+                                    <label>Background Image</label>
+                                    <input type="file" id="page-bg-image" accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label>Font Family</label>
+                                    <select id="page-font-family">
+                                        <option value="Arial">Arial</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Times New Roman">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Font Size (px)</label>
+                                    <input type="number" id="page-font-size" value="16" min="10" max="32">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="page-requires-signature" checked>
+                                        Requires Signature
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="elements-builder" class="elements-builder hidden">
+                                <h4>Page Elements</h4>
+                                <div class="element-actions">
+                                    <button class="btn btn-sm btn-secondary" data-element-type="question">+ Question</button>
+                                    <button class="btn btn-sm btn-secondary" data-element-type="image-upload">+ Image Upload</button>
+                                    <button class="btn btn-sm btn-secondary" data-element-type="text">+ Text Section</button>
+                                    <button class="btn btn-sm btn-secondary" data-element-type="divider">+ Divider</button>
+                                    <button class="btn btn-sm btn-secondary" data-element-type="spacing">+ Spacing</button>
+                                </div>
+                                <div id="elements-list" class="elements-list">
+                                    <!-- Elements will be dynamically loaded here -->
+                                </div>
+                            </div>
+                            <div id="content-editor" class="content-editor hidden">
+                                <h4>Content Editor</h4>
+                                <div id="rich-text-editor" class="rich-text-editor" contenteditable="true">
+                                    <!-- Rich text content will go here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="editor-preview">
+                            <h4>Live Preview</h4>
+                            <div id="page-preview" class="page-preview">
+                                <!-- Live preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entry Details Modal -->
+        <div id="entry-details-modal" class="modal hidden">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2>Entry Details</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="entry-details-content">
+                        <!-- Entry details will be dynamically loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="unlock-entry-btn" class="btn btn-warning hidden">Unlock Entry</button>
+                    <button id="export-pdf-btn" class="btn btn-primary">Export Notebook PDF</button>
+                    <button id="delete-entry-btn" class="btn btn-danger hidden">Delete Entry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group Users Modal -->
+        <div id="group-users-modal" class="modal hidden">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2 id="group-users-title">Group Users</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-actions">
+                        <button id="add-user-btn" class="btn btn-primary">Add User</button>
+                    </div>
+                    <div id="group-users-list" class="users-list">
+                        <!-- Users will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Assignment Modal -->
+        <div id="page-assignment-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="assignment-user-name">Assign Pages to User</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="page-assignment-form">
+                        <div id="assignment-pages-list" class="assignment-pages-list">
+                            <!-- Pages will be dynamically loaded here -->
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Assign Pages</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmation-modal" class="modal hidden">
+            <div class="modal-content small">
+                <div class="modal-header">
+                    <h2>Confirm Action</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmation-message">Are you sure you want to perform this action?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="confirm-action" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="js/appwrite-client.js"></script>
+    <script src="js/common/api-client.js"></script>
+    <script src="js/common/dom-utils.js"></script>
+    <script src="js/common/form-utils.js"></script>
+    <script src="js/common/storage-utils.js"></script>
+    <script src="js/common/pdf-generator.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/user/user-login.js"></script>
+    <script src="js/user/user-dashboard.js"></script>
+    <script src="js/user/page-entry.js"></script>
+    <script src="js/user/signature-pad.js"></script>
+    <script src="js/user/form-validation.js"></script>
+    <script src="js/admin/admin-dashboard.js"></script>
+    <script src="js/admin/notebook-editor.js"></script>
+    <script src="js/admin/page-builder.js"></script>
+    <script src="js/admin/entries-manager.js"></script>
+    <script src="js/admin/group-manager.js"></script>
+    <script src="js/admin/user-assignment.js"></script>
+    <script src="js/admin/audit-log.js"></script>
+    <script src="js/admin/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
