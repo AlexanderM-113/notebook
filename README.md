@@ -2,6 +2,12 @@
 
 A comprehensive web application for managing customizable digital notebooks with fillable forms and content pages. Built with HTML, CSS, JavaScript, and Appwrite backend.
 
+## 📚 Documentation
+
+- **[User Guide](USER_GUIDE.md)** - Complete guide for administrators and regular users
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - How to deploy and share the application with others
+- **[Changes Log](CHANGES.md)** - Recent fixes and improvements
+
 ## Features
 
 ### For Administrators
