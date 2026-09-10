@@ -1,24 +1,26 @@
 {
   "name": "notebook-writer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A comprehensive web application for managing customizable digital notebooks with fillable forms and content pages",
   "main": "index.html",
   "scripts": {
     "start": "python -m http.server 8000",
     "test": "echo \"Open test-basic.html in your browser to run tests\"",
-    "setup": "node setup-appwrite.js"
+    "setup-cloudflare": "node setup-cloudflare.js",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
   },
   "keywords": [
     "notebook",
     "forms",
-    "appwrite",
+    "cloudflare",
     "digital-signature",
     "pdf-generation"
   ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
-    "node-appwrite": "^14.0.0"
-  }
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {}
 }

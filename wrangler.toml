@@ -1,0 +1,20 @@
+name = "notebook-writer"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "notebook_db"
+database_id = "notebook_db"
+
+# R2 Storage binding
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "notebook-storage"
+
+# Environment variables for secrets (these will be set via wrangler secret)
+# variables = { 
+#   ADMIN_EMAIL = "alexander_m113@outlook.com",
+#   ADMIN_PASSWORD = "Arizonameet1"
+# }
