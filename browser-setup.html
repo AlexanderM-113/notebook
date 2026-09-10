@@ -107,149 +107,174 @@
         <div class="log" id="log"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0/dist/appwrite.umd.js"></script>
     <script>
-        // Wait for Appwrite to load
-        window.addEventListener('load', function() {
-            if (typeof Appwrite === 'undefined') {
-                log('Appwrite SDK failed to load', 'error');
+        // Define UI functions immediately (not inside load event)
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            if (!logDiv) {
+                console.log(`[${type.toUpperCase()}] ${message}`);
                 return;
             }
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            const logDiv = document.getElementById('log');
+            if (logDiv) logDiv.innerHTML = '';
+        }
+
+        function updateProgress(percent) {
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) progressFill.style.width = percent + '%';
+        }
+
+        // Initialize after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Appwrite SDK loaded
+            let attempts = 0;
+            const maxAttempts = 10;
             
-            const { Client, Databases, Storage, ID } = Appwrite;
-
-            // Initialize Appwrite Client
-            const client = new Client()
-                .setEndpoint('https://sfo.cloud.appwrite.io/v1')
-                .setProject('6a3454e9002af9bce3d6');
-
-            // Set API key (replace with your actual key)
-            client.setKey('standard_34226a60f3607f5160ffbb5d87b71504b8c3b811083c8e63b6ebb3647ed35795b6856a2771a0e1199fc9bc656ad44d183cd5eec9fe2c53a7f8f15f6ba66a733d1ffc76eabfb0e0484c45f5c3de2277d1fa0ec46e8c12b');
-
-            // Initialize services
-            const databases = new Databases(client);
-            const storage = new Storage(client);
-
-            // Database ID
-            const DB_ID = 'notebook_db';
-
-            // Simplified collection definitions (using JSON attributes)
-            const collections = [
-                { id: 'notebooks', name: 'Notebooks' },
-                { id: 'groups', name: 'Groups' },
-                { id: 'users', name: 'Users' },
-                { id: 'pages', name: 'Pages' },
-                { id: 'page_elements', name: 'Page Elements' },
-                { id: 'page_assignments', name: 'Page Assignments' },
-                { id: 'entries', name: 'Entries' },
-                { id: 'entry_responses', name: 'Entry Responses' },
-                { id: 'audit_log', name: 'Audit Log' }
-            ];
-
-            // Storage bucket definitions
-            const buckets = [
-                { id: 'notebook_covers', name: 'Notebook Covers' },
-                { id: 'page_backgrounds', name: 'Page Backgrounds' },
-                { id: 'entry_images', name: 'Entry Images' },
-                { id: 'signatures', name: 'Signatures' },
-                { id: 'exports', name: 'Exports' }
-            ];
-
-            // UI Functions
-            function log(message, type = 'info') {
-                const logDiv = document.getElementById('log');
-                const timestamp = new Date().toLocaleTimeString();
-                const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
-                logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
-                logDiv.scrollTop = logDiv.scrollHeight;
-            }
-
-            function clearLog() {
-                document.getElementById('log').innerHTML = '';
-            }
-
-            function updateProgress(percent) {
-                document.getElementById('progress-fill').style.width = percent + '%';
-            }
-
-            async function runSetup() {
-                const setupBtn = document.getElementById('setup-btn');
-                setupBtn.disabled = true;
-                
-                try {
-                    log('Starting Appwrite setup...', 'info');
-                    updateProgress(5);
-
-                    // Create database
-                    log('Creating database...', 'info');
-                    try {
-                        await databases.create(DB_ID, 'Notebook Writer Database');
-                        log('Database created successfully', 'success');
-                    } catch (error) {
-                        if (error.message.includes('already exists')) {
-                            log('Database already exists', 'info');
-                        } else {
-                            throw error;
-                        }
-                    }
-                    updateProgress(15);
-
-                    // Create collections
-                    log('Creating collections...', 'info');
-                    for (let i = 0; i < collections.length; i++) {
-                        const collection = collections[i];
-                        try {
-                            await databases.createCollection(DB_ID, collection.id, collection.name);
-                            log(`Collection '${collection.name}' created successfully`, 'success');
-                        } catch (error) {
-                            if (error.message.includes('already exists')) {
-                                log(`Collection '${collection.name}' already exists`, 'info');
-                            } else {
-                                log(`Error creating collection '${collection.name}': ${error.message}`, 'error');
-                            }
-                        }
-                        updateProgress(15 + ((i + 1) / collections.length) * 35);
-                    }
-
-                    // Create storage buckets
-                    log('Creating storage buckets...', 'info');
-                    for (let i = 0; i < buckets.length; i++) {
-                        const bucket = buckets[i];
-                        try {
-                            await storage.createBucket(bucket.id, bucket.name);
-                            log(`Bucket '${bucket.name}' created successfully`, 'success');
-                        } catch (error) {
-                            if (error.message.includes('already exists')) {
-                                log(`Bucket '${bucket.name}' already exists`, 'info');
-                            } else {
-                                log(`Error creating bucket '${bucket.name}': ${error.message}`, 'error');
-                            }
-                        }
-                        updateProgress(50 + ((i + 1) / buckets.length) * 40);
-                    }
-
-                    updateProgress(100);
-                    log('Appwrite setup completed successfully!', 'success');
-                    log('Please configure attributes in Appwrite Console manually for now.', 'info');
-                    log('Open index.html to test the application.', 'info');
-
-                } catch (error) {
-                    log(`Error during setup: ${error.message}`, 'error');
-                    console.error(error);
-                } finally {
-                    setupBtn.disabled = false;
+            function initializeAppwrite() {
+                if (typeof Appwrite !== 'undefined' && Appwrite.Client) {
+                    log('Appwrite SDK loaded successfully', 'success');
+                    setupAppwriteClient();
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    setTimeout(initializeAppwrite, 500);
+                } else {
+                    log('Failed to load Appwrite SDK - check your internet connection', 'error');
+                    log('Error: Appwrite library did not load from CDN', 'error');
                 }
             }
 
-            // Make functions globally available
-            window.log = log;
-            window.clearLog = clearLog;
-            window.updateProgress = updateProgress;
-            window.runSetup = runSetup;
+            function setupAppwriteClient() {
+                try {
+                    const { Client, Databases, Storage, ID } = Appwrite;
 
-            // Add event listeners to buttons
-            document.getElementById('setup-btn').addEventListener('click', runSetup);
-            document.getElementById('clear-btn').addEventListener('click', clearLog);
+                    // Initialize Appwrite Client
+                    const client = new Client()
+                        .setEndpoint('https://sfo.cloud.appwrite.io/v1')
+                        .setProject('6a3454e9002af9bce3d6');
+
+                    // Set API key
+                    client.setKey('standard_34226a60f3607f5160ffbb5d87b71504b8c3b811083c8e63b6ebb3647ed35795b6856a2771a0e1199fc9bc656ad44d183cd5eec9fe2c53a7f8f15f6ba66a733d1ffc76eabfb0e0484c45f5c3de2277d1fa0ec46e8c12b');
+
+                    // Initialize services
+                    const databases = new Databases(client);
+                    const storage = new Storage(client);
+
+                    // Database ID
+                    const DB_ID = 'notebook_db';
+
+                    // Collection definitions
+                    const collections = [
+                        { id: 'notebooks', name: 'Notebooks' },
+                        { id: 'groups', name: 'Groups' },
+                        { id: 'users', name: 'Users' },
+                        { id: 'pages', name: 'Pages' },
+                        { id: 'page_elements', name: 'Page Elements' },
+                        { id: 'page_assignments', name: 'Page Assignments' },
+                        { id: 'entries', name: 'Entries' },
+                        { id: 'entry_responses', name: 'Entry Responses' },
+                        { id: 'audit_log', name: 'Audit Log' }
+                    ];
+
+                    // Storage bucket definitions
+                    const buckets = [
+                        { id: 'notebook_covers', name: 'Notebook Covers' },
+                        { id: 'page_backgrounds', name: 'Page Backgrounds' },
+                        { id: 'entry_images', name: 'Entry Images' },
+                        { id: 'signatures', name: 'Signatures' },
+                        { id: 'exports', name: 'Exports' }
+                    ];
+
+                    async function runSetup() {
+                        const setupBtn = document.getElementById('setup-btn');
+                        setupBtn.disabled = true;
+                        
+                        try {
+                            log('Starting Appwrite setup...', 'info');
+                            updateProgress(5);
+
+                            // Create database
+                            log('Creating database...', 'info');
+                            try {
+                                await databases.create(DB_ID, 'Notebook Writer Database');
+                                log('Database created successfully', 'success');
+                            } catch (error) {
+                                if (error.message && error.message.includes('already exists')) {
+                                    log('Database already exists', 'info');
+                                } else {
+                                    throw error;
+                                }
+                            }
+                            updateProgress(15);
+
+                            // Create collections
+                            log('Creating collections...', 'info');
+                            for (let i = 0; i < collections.length; i++) {
+                                const collection = collections[i];
+                                try {
+                                    await databases.createCollection(DB_ID, collection.id, collection.name);
+                                    log(`Collection '${collection.name}' created successfully`, 'success');
+                                } catch (error) {
+                                    if (error.message && error.message.includes('already exists')) {
+                                        log(`Collection '${collection.name}' already exists`, 'info');
+                                    } else {
+                                        log(`Error creating collection '${collection.name}': ${error.message}`, 'error');
+                                    }
+                                }
+                                updateProgress(15 + ((i + 1) / collections.length) * 35);
+                            }
+
+                            // Create storage buckets
+                            log('Creating storage buckets...', 'info');
+                            for (let i = 0; i < buckets.length; i++) {
+                                const bucket = buckets[i];
+                                try {
+                                    await storage.createBucket(bucket.id, bucket.name);
+                                    log(`Bucket '${bucket.name}' created successfully`, 'success');
+                                } catch (error) {
+                                    if (error.message && error.message.includes('already exists')) {
+                                        log(`Bucket '${bucket.name}' already exists`, 'info');
+                                    } else {
+                                        log(`Error creating bucket '${bucket.name}': ${error.message}`, 'error');
+                                    }
+                                }
+                                updateProgress(50 + ((i + 1) / buckets.length) * 40);
+                            }
+
+                            updateProgress(100);
+                            log('Appwrite setup completed successfully!', 'success');
+                            log('Please configure attributes in Appwrite Console manually for now.', 'info');
+                            log('Open index.html to test the application.', 'info');
+
+                        } catch (error) {
+                            log(`Error during setup: ${error.message}`, 'error');
+                            console.error(error);
+                        } finally {
+                            setupBtn.disabled = false;
+                        }
+                    }
+
+                    // Add event listeners to buttons
+                    document.getElementById('setup-btn').addEventListener('click', runSetup);
+                    document.getElementById('clear-btn').addEventListener('click', clearLog);
+                    
+                    log('Setup initialized. Click "Start Setup" to begin.', 'info');
+
+                } catch (error) {
+                    log(`Initialization error: ${error.message}`, 'error');
+                    console.error(error);
+                }
+            }
+
+            // Start the initialization process
+            initializeAppwrite();
         });
     </script>
 </body>
