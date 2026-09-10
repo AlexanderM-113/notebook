@@ -63,17 +63,19 @@ class AuthManager {
     // Admin login
     async adminLogin(email, password) {
         try {
-            // Create email password session
-            const session = await account.createEmailPasswordSession(email, password);
-            
-            // Get current user
-            const user = await account.get();
-            
-            // Create session
+            // Hardcoded admin credentials
+            const ADMIN_EMAIL = 'alexander_m113@outlook.com';
+            const ADMIN_PASSWORD = 'Arizonameet1';
+
+            if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+                throw new Error('Invalid email or password');
+            }
+
+            // Create session without Appwrite authentication (using hardcoded admin)
             this.currentUser = {
-                id: user.$id,
-                email: user.email,
-                name: user.name,
+                id: 'admin_user',
+                email: ADMIN_EMAIL,
+                name: 'Alexander Admin',
                 role: 'admin'
             };
             
@@ -91,6 +93,9 @@ class AuthManager {
     async logout() {
         try {
             if (this.isAdmin) {
+                // For hardcoded admin, just clear session
+                // No Appwrite session to delete
+            } else {
                 await account.deleteSession('current');
             }
             
@@ -145,16 +150,17 @@ class AuthManager {
         }
 
         if (this.isAdmin) {
-            try {
-                await account.get();
-                return true;
-            } catch (error) {
-                this.clearSession();
-                return false;
-            }
+            // For hardcoded admin, session is always valid
+            return true;
         }
 
-        return true;
+        try {
+            await account.get();
+            return true;
+        } catch (error) {
+            this.clearSession();
+            return false;
+        }
     }
 }
 

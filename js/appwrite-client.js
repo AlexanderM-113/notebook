@@ -5,7 +5,7 @@ const { Client, Account, Databases, Storage, Functions, ID, Query } = Appwrite;
 const client = new Client()
     .setEndpoint('https://sfo.cloud.appwrite.io/v1')
     .setProject('6a3454e9002af9bce3d6');
-client.setKey('standard_34226a60f3607f5160ffbb5d87b71504b8c3b811083c8e63b6ebb3647ed35795b6856a2771a0e1199fc9bc656ad44d183cd5eec9fe2c53a7f8f15f6ba66a733d1ffc76eabfb0e0484c45f5c3de2277d1fa0ec46e8c12b5d52a5f574be92195eec51dd06040fe0227fbcebe386f6ff67fc771d96d081f634d3f25983188a52df3');
+client.setKey('standard_4372961cd462c7cd49806133425b80358b230c7dccb89e4528db8be6e54e0aff6ca6d061a60bf998052fa9bc8384c9c2a8f89b324e069928b7c0b0318f91bd251cb976fe63fff37d13d2fbca745430738c060b9478010dcff5629fbcc1d238894c1db4ac45b2a291571155704dde559a6b23e21505f1df5b1efe3766f71c5863');
 // Initialize Appwrite Services
 const account = new Account(client);
 const databases = new Databases(client);
@@ -13,7 +13,7 @@ const storage = new Storage(client);
 const functions = new Functions(client);
 
 // Database IDs
-const DB_ID = 'notebook_db';
+const DB_ID = '6aa1fac90031a849319c';
 
 // Collection IDs
 const COLLECTIONS = {

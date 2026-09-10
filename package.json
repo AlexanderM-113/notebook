@@ -6,7 +6,7 @@
   "scripts": {
     "start": "python -m http.server 8000",
     "test": "echo \"Open test-basic.html in your browser to run tests\"",
-    "setup": "echo \"Open browser-setup.html in your browser to set up Appwrite\""
+    "setup": "node setup-appwrite.js"
   },
   "keywords": [
     "notebook",
@@ -18,5 +18,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "node-appwrite": "^14.0.0"
+  }
 }

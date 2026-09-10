@@ -388,61 +388,21 @@
                         <!-- Entry details will be dynamically loaded here -->
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="unlock-entry-btn" class="btn btn-warning hidden">Unlock Entry</button>
-                    <button id="export-pdf-btn" class="btn btn-primary">Export Notebook PDF</button>
-                    <button id="delete-entry-btn" class="btn btn-danger hidden">Delete Entry</button>
-                </div>
             </div>
         </div>
 
-        <!-- Group Users Modal -->
-        <div id="group-users-modal" class="modal hidden">
-            <div class="modal-content large">
-                <div class="modal-header">
-                    <h2 id="group-users-title">Group Users</h2>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-actions">
-                        <button id="add-user-btn" class="btn btn-primary">Add User</button>
-                    </div>
-                    <div id="group-users-list" class="users-list">
-                        <!-- Users will be dynamically loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page Assignment Modal -->
-        <div id="page-assignment-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="assignment-user-name">Assign Pages to User</h2>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="page-assignment-form">
-                        <div id="assignment-pages-list" class="assignment-pages-list">
-                            <!-- Pages will be dynamically loaded here -->
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Assign Pages</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <!-- Toast Container -->
+        <div id="toast-container"></div>
 
         <!-- Confirmation Modal -->
         <div id="confirmation-modal" class="modal hidden">
-            <div class="modal-content small">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h2>Confirm Action</h2>
                     <button class="close-modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p id="confirmation-message">Are you sure you want to perform this action?</p>
+                    <p id="confirmation-message">Are you sure you want to proceed?</p>
                 </div>
                 <div class="modal-footer">
                     <button id="confirm-cancel" class="btn btn-secondary">Cancel</button>
@@ -450,26 +410,18 @@
                 </div>
             </div>
         </div>
-
-        <!-- Toast Notifications -->
-        <div id="toast-container" class="toast-container"></div>
     </div>
 
-    <!-- External Libraries -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
-    <!-- Application Scripts -->
+    <script src="js/appwrite-sdk-loader.js"></script>
     <script src="js/appwrite-client.js"></script>
-    <script src="js/common/api-client.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/common/dom-utils.js"></script>
     <script src="js/common/form-utils.js"></script>
+    <script src="js/common/api-client.js"></script>
     <script src="js/common/storage-utils.js"></script>
     <script src="js/common/pdf-generator.js"></script>
-    <script src="js/auth.js"></script>
     <script src="js/user/user-login.js"></script>
     <script src="js/user/user-dashboard.js"></script>
     <script src="js/user/page-entry.js"></script>
@@ -477,6 +429,7 @@
     <script src="js/user/form-validation.js"></script>
     <script src="js/admin/admin-dashboard.js"></script>
     <script src="js/admin/notebook-editor.js"></script>
+    <script src="js/admin/admin-login.js"></script>
     <script src="js/admin/page-builder.js"></script>
     <script src="js/admin/entries-manager.js"></script>
     <script src="js/admin/group-manager.js"></script>

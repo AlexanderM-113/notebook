@@ -8,6 +8,7 @@ class ApiClient {
         this.collections = COLLECTIONS;
         this.buckets = BUCKETS;
         this.Query = Appwrite.Query;
+    }
 
     // Generic database operations
     async listDocuments(collectionId, queries = []) {
