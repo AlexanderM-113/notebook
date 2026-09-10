@@ -1,11 +1,12 @@
 # Notebook Writer
 
-A comprehensive web application for managing customizable digital notebooks with fillable forms and content pages. Built with HTML, CSS, JavaScript, and Appwrite backend.
+A comprehensive web application for managing customizable digital notebooks with fillable forms and content pages. Built with HTML, CSS, JavaScript, and Cloudflare Workers backend.
 
 ## 📚 Documentation
 
 - **[User Guide](USER_GUIDE.md)** - Complete guide for administrators and regular users
-- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - How to deploy and share the application with others
+- **[Cloudflare Deployment Guide](CLOUDFLARE_DEPLOYMENT.md)** - How to deploy with Cloudflare Workers, D1, and R2
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Legacy Appwrite deployment guide
 - **[Changes Log](CHANGES.md)** - Recent fixes and improvements
 
 ## Features
@@ -45,72 +46,86 @@ A comprehensive web application for managing customizable digital notebooks with
 ## Technology Stack
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Backend**: Appwrite (Database, Authentication, Storage, Functions)
+- **Backend**: Cloudflare Workers (Serverless API)
+- **Database**: Cloudflare D1 (SQLite-based)
+- **Storage**: Cloudflare R2 (S3-compatible object storage)
 - **PDF Generation**: jsPDF + html2pdf
 - **Signature Capture**: SignaturePad.js
 - **Drag & Drop**: SortableJS
-- **Database**: Appwrite Document Database
-- **Storage**: Appwrite File Storage
 
 ## Setup Instructions
 
 ### Prerequisites
-- Appwrite account (free tier available)
+- Cloudflare account with Workers, D1, and R2 enabled
+- Node.js and npm installed
 - Web browser with JavaScript enabled
 - Basic knowledge of web development
 
-### Step 1: Appwrite Setup
+### Step 1: Cloudflare Setup
 
-1. **Create Appwrite Project**
-   - Log in to your Appwrite console
-   - Create a new project named "Notebook Writer"
-   - Note your Project ID and API Endpoint
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-2. **Configure API Key**
-   - Go to Settings > API Keys
-   - Create a new API key with all permissions
-   - Copy the API key
+2. **Configure Cloudflare**
+   ```bash
+   # Login to Cloudflare
+   wrangler login
+   
+   # Create D1 database
+   wrangler d1 create notebook_db
+   
+   # Create R2 storage bucket
+   wrangler r2 bucket create notebook-storage
+   ```
 
-3. **Run Database Setup**
-   - Open `browser-setup.html` in your web browser
-   - Click "Start Setup" to create database collections and storage buckets
-   - Alternatively, use the Appwrite Console to manually create:
-     - Database: `notebook_db`
-     - Collections: notebooks, groups, users, pages, page_elements, page_assignments, entries, entry_responses, audit_log
-     - Storage Buckets: notebook_covers, page_backgrounds, entry_images, signatures, exports
+3. **Update Configuration**
+   - Update `wrangler.toml` with your database ID
+   - Update `js/cloudflare-client.js` with your worker URL
+
+4. **Set Up Database**
+   ```bash
+   wrangler d1 execute notebook_db --file=schema.sql --local
+   ```
+
+5. **Set Environment Variables**
+   ```bash
+   wrangler secret put ADMIN_EMAIL
+   wrangler secret put ADMIN_PASSWORD
+   ```
+
+6. **Deploy to Cloudflare**
+   ```bash
+   npm run deploy
+   ```
 
 ### Step 2: Configure Application
 
-1. **Update Appwrite Credentials**
-   - Open `js/appwrite-client.js`
-   - Update the following with your Appwrite details:
+1. **Update Cloudflare Worker URL**
+   - Open `js/cloudflare-client.js`
+   - Update the worker URL with your deployed worker URL:
    ```javascript
-   const client = new Client()
-       .setEndpoint('YOUR_APPWRITE_ENDPOINT') // e.g., 'https://cloud.appwrite.io/v1'
-       .setProject('YOUR_PROJECT_ID');
+   const cloudflareClient = new CloudflareClient('https://notebook-writer.YOUR_SUBDOMAIN.workers.dev');
    ```
-
-2. **Update API Key in Setup Script**
-   - Open `browser-setup.html`
-   - Replace the API key with your actual Appwrite API key
-   - This is only needed for the initial setup
 
 ### Step 3: Deploy the Application
 
 1. **Local Development**
    - Simply open `index.html` in your web browser
-   - Or use a local server like Live Server in VS Code
+   - Or use a local server: `npm start`
+   - For local worker development: `npm run dev`
 
 2. **Production Deployment**
-   - Upload all files to your web server
-   - Ensure HTTPS is enabled for secure connections
-   - Configure CORS in Appwrite if needed
+   - Frontend is already deployed to Netlify: https://4146notebook.netlify.app/
+   - Backend is deployed to Cloudflare Workers
+   - Ensure HTTPS is enabled (automatic with Cloudflare)
 
 ### Step 4: Initial Configuration
 
 1. **Create Admin Account**
-   - Use Appwrite Console to create an admin user
-   - Or use the admin login interface with email/password
+   - Admin credentials are set via environment variables
+   - Use the admin login interface with email/password
 
 2. **Create Groups**
    - Log in as admin
@@ -122,7 +137,12 @@ A comprehensive web application for managing customizable digital notebooks with
    - Create "Notebook A" and assign to Group A
    - Create "Notebook B" and assign to Group B
 
-4. **Add Users**
+4. **Configure Notebook Sync**
+   - Content from Notebook A automatically syncs to Notebook B
+   - User answers are NOT synced between notebooks
+   - Each notebook maintains separate user entries
+
+5. **Add Users**
    - Navigate to Groups tab
    - Add users to each group with their first names
    - Assign specific pages to each user
@@ -187,7 +207,7 @@ A comprehensive web application for managing customizable digital notebooks with
 
 ## Database Schema
 
-### Collections
+### Tables (D1 Database)
 
 #### notebooks
 - Stores notebook configurations and settings
@@ -225,11 +245,11 @@ A comprehensive web application for managing customizable digital notebooks with
 - System action tracking
 - Immutable audit trail
 
-### Storage Buckets
+### Storage Buckets (R2)
 
-- **notebook_covers**: Notebook cover images (5MB max)
-- **page_backgrounds**: Page background images (5MB max)
-- **entry_images**: User-uploaded images (10MB max)
+- **notebook-covers**: Notebook cover images (5MB max)
+- **page-backgrounds**: Page background images (5MB max)
+- **entry-images**: User-uploaded images (10MB max)
 - **signatures**: Digital signature PNGs (2MB max)
 - **exports**: Generated PDF files (50MB max)
 
@@ -251,6 +271,7 @@ The application generates comprehensive PDFs containing:
 - **Audit Logging**: All actions tracked for compliance
 - **File Validation**: Server-side validation of uploads
 - **Entry Locking**: Prevents unauthorized modifications
+- **Cloudflare Security**: DDoS protection, HTTPS, edge security
 
 ## Troubleshooting
 
@@ -269,12 +290,13 @@ The application generates comprehensive PDFs containing:
 **PDF generation fails**
 - Check browser console for errors
 - Ensure all storage files are accessible
-- Verify Appwrite functions are configured
+- Verify worker is deployed and running
 
-**Appwrite connection errors**
-- Verify API endpoint and project ID
-- Check API key permissions
-- Ensure CORS is configured correctly
+**Cloudflare connection errors**
+- Verify worker URL in cloudflare-client.js
+- Check worker logs: `wrangler tail`
+- Ensure database and storage are configured
+- Check environment variables are set
 
 ## Development
 
@@ -282,21 +304,30 @@ The application generates comprehensive PDFs containing:
 ```
 notebook/
 ├── index.html              # Main application file
+├── wrangler.toml           # Cloudflare Workers configuration
+├── schema.sql              # D1 database schema
 ├── css/
 │   ├── common.css          # Shared styles
 │   ├── admin.css           # Admin interface styles
 │   ├── user.css            # User interface styles
 │   └── responsive.css      # Mobile responsiveness
 ├── js/
-│   ├── appwrite-client.js  # Appwrite configuration
-│   ├── auth.js             # Authentication management
-│   ├── app.js              # Main application logic
-│   ├── common/             # Shared utilities
-│   ├── admin/              # Admin functionality
-│   └── user/               # User functionality
+│   ├── cloudflare-client.js    # Cloudflare API client
+│   ├── auth.js                 # Authentication management
+│   ├── app.js                  # Main application logic
+│   ├── common/                 # Shared utilities
+│   │   ├── api-client-cloudflare.js  # Cloudflare API wrapper
+│   │   ├── storage-utils.js         # Storage utilities
+│   │   └── ...
+│   ├── admin/                  # Admin functionality
+│   │   ├── notebook-sync.js        # Notebook sync manager
+│   │   └── ...
+│   └── user/                   # User functionality
+├── src/
+│   └── worker.js           # Cloudflare Worker script
 ├── lib/                    # External libraries
 ├── assets/                 # Static assets
-├── browser-setup.html      # Database setup tool
+├── setup-cloudflare.js     # Cloudflare setup script
 └── README.md              # This file
 ```
 
@@ -315,6 +346,11 @@ notebook/
    - Modify `auth.js` for additional login methods
    - Update user management accordingly
 
+4. **Cloudflare Worker Endpoints**
+   - Add new endpoints to `src/worker.js`
+   - Update API client in `js/cloudflare-client.js`
+   - Test with `wrangler dev`
+
 ## License
 
 This project is provided as-is for educational and commercial use.
@@ -323,13 +359,15 @@ This project is provided as-is for educational and commercial use.
 
 For issues and questions:
 - Check the troubleshooting section
-- Review Appwrite documentation
+- Review Cloudflare documentation
 - Consult the code comments for implementation details
 
 ## Credits
 
 Built with:
-- [Appwrite](https://appwrite.io/) - Backend-as-a-Service
+- [Cloudflare Workers](https://workers.cloudflare.com/) - Serverless compute
+- [Cloudflare D1](https://developers.cloudflare.com/d1/) - SQLite database
+- [Cloudflare R2](https://developers.cloudflare.com/r2/) - Object storage
 - [SignaturePad.js](https://github.com/szimek/signature_pad) - Signature capture
 - [jsPDF](https://github.com/parallax/jsPDF) - PDF generation
 - [SortableJS](https://github.com/SortableJS/Sortable) - Drag and drop
